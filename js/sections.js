@@ -727,11 +727,11 @@ var scrollVis = function () {
               return "<strong>Nombre:</strong> <span style='color:red'>" + d.values["rate"]+ "</span>";
           }) */
 
-     /* var tip = d3.tip()
-          .attr('class', 'd3-tip')
-          .offset([-10, 0])
-          .html(function(data) {
-              return "<strong>Nombre:</strong> <span style='color:red'>" + data[0].values+ "</span>";})*/
+
+          //.html(function(d) {
+          //    return "<strong>Nombre:</strong> <span style='color:red'>" + d.rate+ "</span>";})
+
+
 
 
           slice.selectAll("rect")
@@ -744,19 +744,28 @@ var scrollVis = function () {
               .attr("x", function(d) { if (d.rate === 'Registered') return 25 ;
               return 65;
               })
-              .style("fill", function(d) { return color(d.rate) })
+              .style("fill", function(d) {
+
+                  return color(d.rate) })
               .attr("y", function(d) { return y(0); })
               .attr("height", function(d) { return height - y(0); })
               .on("mouseover", function(d) {
                   d3.select(this).style("fill", d3.rgb(color(d.rate)).darker(2));
-                  //tip.show();
+                  tip.show(d);
               })
               .on("mouseout", function(d) {
                   d3.select(this).style("fill", color(d.rate));
-                  //tip.hide();
+                  tip.hide(d);
               });
 
+        var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-10, 0])
+            .html(function (d) {
+                return d.value;
+            })
 
+      svg.call(tip);
 
 
           slice.selectAll("rect")
