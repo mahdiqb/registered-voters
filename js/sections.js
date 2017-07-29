@@ -20,6 +20,128 @@ var scrollVis = function () {
   var lastIndex = -1;
   var activeIndex = 0;
 
+
+
+  // New code by mahdi
+
+
+   /* var x0 = d3.scaleBand()
+        .rangeRound([0, width])
+        .paddingInner(0.1);
+
+    var x1 = d3.scaleBand()
+        .padding(0.05);
+
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0]);
+
+    var z = d3.scaleOrdinal()
+        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);*/
+
+
+
+    var x0 = d3.scaleBand()
+        .rangeRound([0, width])
+        .padding(0.1);
+
+    var x1 = d3.scaleLinear();
+
+    var y = d3.scaleLinear()
+        .range([height, 40]);
+
+    var xAxis = d3.axisBottom(x0)
+
+    var yAxis = d3.axisLeft(y);
+
+    var color = d3.scaleOrdinal()
+        .range(["#BBDEFB","#005288"]);
+
+
+
+
+    /* d3.json("data/cat.json", function(error, data) {
+
+        var categoriesNames = data.map(function(d) { return d.categorie; });
+        var rateNames = data[0].values.map(function(d) { return d.rate; });
+
+        x0.domain(categoriesNames);
+        x1.domain(rateNames).rangeRoundBands([0, x0.rangeBand()]);
+        y.domain([0, d3.max(data, function(categorie) { return d3.max(categorie.values, function(d) { return d.value; }); })]);
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .style('opacity','0')
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 4)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .style('font-weight','bold')
+            .text("Value");
+
+        svg.select('.y').transition().duration(500).delay(1300).style('opacity','1');
+
+        var slice = svg.selectAll(".slice")
+            .data(data)
+            .enter().append("g")
+            .attr("class", "g")
+            .attr("transform",function(d) { return "translate(" + x0(d.categorie) + ",0)"; });
+
+        slice.selectAll("rect")
+            .data(function(d) { return d.values; })
+            .enter().append("rect")
+            .attr("width", x1.rangeBand())
+            .attr("x", function(d) { return x1(d.rate); })
+            .style("fill", function(d) { return color(d.rate) })
+            .attr("y", function(d) { return y(0); })
+            .attr("height", function(d) { return height - y(0); })
+            .on("mouseover", function(d) {
+                d3.select(this).style("fill", d3.rgb(color(d.rate)).darker(2));
+            })
+            .on("mouseout", function(d) {
+                d3.select(this).style("fill", color(d.rate));
+            });
+
+        slice.selectAll("rect")
+            .transition()
+            .delay(function (d) {return Math.random()*1000;})
+            .duration(1000)
+            .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return height - y(d.value); });
+
+        //Legend
+        var legend = svg.selectAll(".legend")
+            .data(data[0].values.map(function(d) { return d.rate; }).reverse())
+            .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d,i) { return "translate(0," + i * 20 + ")"; })
+            .style("opacity","0");
+
+        legend.append("rect")
+            .attr("x", width - 18)
+            .attr("width", 18)
+            .attr("height", 18)
+            .style("fill", function(d) { return color(d); });
+
+        legend.append("text")
+            .attr("x", width - 24)
+            .attr("y", 9)
+            .attr("dy", ".35em")
+            .style("text-anchor", "end")
+            .text(function(d) {return d; });
+
+        legend.transition().duration(500).delay(function(d,i){ return 1300 + 100 * i; }).style("opacity","1");
+
+    }); */
+
+    // End of new code
+
   // Sizing for the grid visualization
   var squareSize = 48;
   var squarePad = 2;
@@ -49,15 +171,17 @@ var scrollVis = function () {
     .range([0, height - 50], 0.1, 0.1, 0.1);
 
   // Color is determined just by the index of the bars
-  var barColors = { 1: '#71a0c9', 2: '#87b2d3', 3: '#9ecae1' , 0: '#527db4'};
+  var barColors = { 1: '#0096D6', 2: '#87b2d3', 3: '#BBDEFB' , 0: '#005288'};
 
   // The histogram display shows the
   // first 30 minutes of data
   // so the range goes from 0 to 30
   // @v4 using new scale name
-  var xHistScale = d3.scaleLinear()
-    .domain([0, 100])
-    .range([0, width - 20]);
+  /*var xHistScale = d3.scaleOrdinal()
+    .domain('18-24','25-34','35-50', 'Past 50')
+      .range([0, width - 20]);*/
+
+    //.range([0, width - 20]);
 
   // @v4 using new scale name
   /*var yHistScale = d3.scaleLinear()
@@ -73,7 +197,7 @@ var scrollVis = function () {
   // @v4 using new scale name
   var coughColorScale = d3.scaleLinear()
     .domain([0, 1.0])
-    .range(['#9ecae1', 'red']);
+    .range(['#BBDEFB', 'red']);
 
   // You could probably get fancy and
   // use just one axis, modifying the
@@ -84,9 +208,9 @@ var scrollVis = function () {
     .scale(xBarScale);
 
   // @v4 using new axis name
-  var xAxisHist = d3.axisBottom()
+ /* var xAxisHist = d3.axisBottom()
     .scale(xHistScale)
-    .tickFormat(function (d) { return d + ' y/o'; });
+    .tickFormat(function (d) { return d + ' y/o'; });*/
 
   // When scrolling to a new section
   // the activation function for that
@@ -145,10 +269,11 @@ var scrollVis = function () {
 
       // get aggregated histogram data
 
-      var histData = getHistogram(rawData);
+     /* var histData = getHistogram(rawData);
       // set histogram's domain
       var histMax = d3.max(histData, function (d) { return d.length; });
-      yHistScale.domain([0, histMax]);
+      yHistScale.domain([0, histMax]);*/
+     var histData = []
 
       setupVis(wordData, fillerCounts, histData);
 
@@ -222,7 +347,7 @@ var scrollVis = function () {
     squares = squares.merge(squaresE)
       .attr('width', squareSize)
       .attr('height', squareSize)
-      .attr('fill', '#527db4')
+      .attr('fill', '#005288')
       .classed('fill-square', function (d) { return d; })
       .attr('x', function (d) { return d.x;})
       .attr('y', function (d) { return d.y;})
@@ -273,12 +398,14 @@ var scrollVis = function () {
       .attr('fill', 'white')
       .attr('opacity', 0);
 
+
+
     // histogram
     // @v4 Using .merge here to ensure
     // new and old data have same attrs applied
-    var hist = g.selectAll('.hist').data(histData);
+    /* var hist = g.selectAll('.hist').data(histData);
     var histE = hist.enter().append('rect')
-      .attr('class', 'hist');
+      .attr('class', 'hist'); */
     /*hist = hist.merge(histE).attr('x', function (d) { return xHistScale(d.x0); })
       .attr('y', height)
       .attr('height', 0)
@@ -286,12 +413,12 @@ var scrollVis = function () {
       .attr('fill', barColors[0])
       .attr('opacity', 0); */
 
-      hist = hist.merge(histE).attr('x', function (d){return d.age})
+        /*      hist = hist.merge(histE).attr('x', function (d){return d.age})
           .attr('y', 520)
           .attr('height', 0)
           .attr('width', 20)
           .attr('fill', barColors[0])
-          .attr('opacity', 0);
+          .attr('opacity', 0); */
 
     /* // cough title
     g.append('text')
@@ -341,7 +468,7 @@ var scrollVis = function () {
     activateFunctions[5] = highlightGrid3;
     activateFunctions[6] = highlightGrid4;
     activateFunctions[7] = showBar;
-    activateFunctions[8] = showHistPart;
+    activateFunctions[8] = testing;
     //activateFunctions[9] = showHistAll;
     //activateFunctions[10] = showCough;
     //activateFunctions[11] = showHistAll;
@@ -486,7 +613,166 @@ var scrollVis = function () {
       .transition()
       .duration(800)
       .attr('opacity', 1.0)
-      .attr('fill', function (d) { return d.filler1 ? '#9ecae1' : '#ddd'; });
+      .attr('fill', function (d) { return d.filler1 ? '#BBDEFB' : '#ddd'; });
+  }
+
+
+
+  function testing() {
+
+      g.selectAll('.bar-text')
+          .transition()
+          .duration(0)
+          .attr('opacity', 0);
+
+      g.selectAll('.bar')
+          .transition()
+          .duration(600)
+          .attr('width', 0);
+
+
+      var data =  [
+          {
+              "categorie": "18-24",
+              "values": [
+                  {
+                      "value": 297978,
+                      "rate": "Registered"
+                  },
+                  {
+                      "value": 1380272,
+                      "rate": "Eligible"
+                  }
+              ]
+          },
+          {
+              "categorie": "25-34",
+              "values": [
+                  {
+                      "value": 1233465,
+                      "rate": "Registered"
+                  },
+                  {
+                      "value": 1948441,
+                      "rate": "Eligible"
+                  }
+              ]
+          },
+          {
+              "categorie": "35-50",
+              "values": [
+                  {
+                      "value": 1556992,
+                      "rate": "Registered"
+                  },
+                  {
+                      "value": 2262650,
+                      "rate": "Eligible"
+                  }
+              ]
+          },
+          {
+              "categorie": "Past 50",
+              "values": [
+                  {
+                      "value": 1886842,
+                      "rate": "Registered"
+                  },
+                  {
+                      "value": 2511399,
+                      "rate": "Eligible"
+                  }
+              ]
+          }
+      ];
+
+          var categoriesNames = data.map(function(d) { return d.categorie; });
+          var rateNames = data[0].values.map(function(d) { return d.rate; });
+      hideAxis();
+
+          x0.domain(categoriesNames);
+          x1.domain(rateNames);
+          y.domain([0, d3.max(data, function(categorie) { return d3.max(categorie.values, function(d) { return d.value; }); })]);
+
+          svg.append("g")
+              .attr("class", "x_axis")
+              .attr("transform", "translate(0," + height + ")")
+              .call(xAxis);
+
+          svg.append("g")
+              .attr("class", "y_axis")
+              .attr('opacity','0')
+              .call(yAxis)
+              .append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 4)
+              .attr("dy", ".71em")
+              .style("text-anchor", "end")
+              .style('font-weight','bold')
+              .text("Value");
+
+          svg.select('.y_axis').transition().duration(500).delay(1300).attr('opacity','1');
+
+          var slice = svg.selectAll(".slice")
+              .data(data)
+              .enter().append("g")
+              .attr("class", "g")
+              .attr("transform",function(d) { return "translate(" + x0(d.categorie) + ",0)"; });
+
+          slice.selectAll("rect")
+              .data(function(d) { return d.values; })
+              .enter().append("rect")
+              .attr("width", 40)
+              .attr("class", "homie")
+              //.attr("width", x1.bandwidth())
+              //.attr("x", function(d) { return x1(d.rate); })
+              .attr("x", function(d) { if (d.rate === 'Registered') return 25 ;
+              return 65;
+              })
+              .style("fill", function(d) { return color(d.rate) })
+              .attr("y", function(d) { return y(0); })
+              .attr("height", function(d) { return height - y(0); })
+              .on("mouseover", function(d) {
+                  d3.select(this).style("fill", d3.rgb(color(d.rate)).darker(2));
+              })
+              .on("mouseout", function(d) {
+                  d3.select(this).style("fill", color(d.rate));
+              });
+
+          slice.selectAll("rect")
+              .transition()
+              .delay(function (d) {return Math.random()*1000;})
+              .duration(1000)
+              .attr("y", function(d) { return y(d.value); })
+              .attr("height", function(d) { return height - y(d.value); });
+
+          //Legend
+          var legend = svg.selectAll(".legend")
+              .data(data[0].values.map(function(d) { return d.rate; }).reverse())
+              .enter().append("g")
+              .attr("class", "legend")
+              .attr("transform", function(d,i) { return "translate(0," + i * 20 + ")"; })
+              .attr("opacity","0")
+
+          legend.append("rect")
+              .attr("x", width - 18)
+              .attr("width", 18)
+              .attr("height", 18)
+              .style("fill", function(d) { return color(d); });
+
+          legend.append("text")
+              .attr("x", width - 24)
+              .attr("y", 9)
+              .attr("dy", ".35em")
+              .style("text-anchor", "end")
+              .text(function(d) {return d; });
+
+          svg.selectAll(".legend")
+              .transition()
+              .duration(500)
+              .attr("opacity","1");
+
+          //legend.transition().duration(500).delay(function(d,i){ return 1300 + 100 * i; }).attr("opacity","1");
   }
 
 
@@ -528,7 +814,7 @@ var scrollVis = function () {
             .attr('fill', function (d) {
 
                 if (d.filler1)
-                    return '#9ecae1'
+                    return '#BBDEFB'
               if (d.filler2)
                 return '#87b2d3'
 
@@ -576,11 +862,11 @@ var scrollVis = function () {
             .attr('fill', function (d) {
 
                 if (d.filler1)
-                    return '#9ecae1'
+                    return '#BBDEFB'
                 if (d.filler2)
                     return '#87b2d3'
                 if (d.filler3)
-                    return '#71a0c9'
+                    return '#0096D6'
                 else
                     return '#ddd';
             });
@@ -626,13 +912,13 @@ var scrollVis = function () {
             .attr('fill', function (d) {
 
                 if (d.filler1)
-                    return '#9ecae1'
+                    return '#BBDEFB'
                 if (d.filler2)
                     return '#87b2d3'
                 if (d.filler3)
-                    return '#71a0c9'
+                    return '#0096D6'
                 if (d.filler4)
-                    return '#527db4'
+                    return '#005288'
                 else
                     return '#ddd';
             });
@@ -650,7 +936,36 @@ var scrollVis = function () {
    */
   function showBar() {
     // ensure bar axis is set
+      hideAxis();
     showAxis(xAxisBar);
+
+      svg.selectAll('.legend')
+          .transition()
+          .duration(500)
+          .attr('opacity', 0);
+
+      svg.selectAll('.x_axis')
+          .transition()
+          .duration(300)
+          .attr('opacity', 0);
+      svg.selectAll('.y_axis')
+          .transition()
+          .duration(300)
+          .attr('opacity', 0);
+
+      svg.selectAll(".homie")
+          .transition()
+          .duration(1000)
+          .attr("width", 0)
+
+
+          //.attr("y", function(d) { return 0; })
+          //.attr("height", function(d) { return 0; });
+
+     /* svg.selectAll('.homie')
+          .transition()
+          .duration(500)
+          .attr('opacity', 0);*/
 
     g.selectAll('.square')
       .transition()
@@ -668,7 +983,7 @@ var scrollVis = function () {
       .duration(0)
       .attr('opacity', 0);
 
-    g.selectAll('.hist')
+    g.selectAll('.rect')
       .transition()
       .duration(600)
       .attr('height', function () { return 0; })
@@ -752,7 +1067,7 @@ var scrollVis = function () {
     g.selectAll('.hist')
       .transition('color')
       .duration(500)
-      .style('fill', '#9ecae1');
+      .style('fill', '#BBDEFB');
 
     g.selectAll('.hist')
       .transition()
@@ -806,6 +1121,10 @@ var scrollVis = function () {
     g.select('.x.axis')
       .transition().duration(500)
       .style('opacity', 0);
+
+      g.select('.x axis')
+          .transition().duration(500)
+          .style('opacity', 0);
   }
 
   /**
@@ -837,7 +1156,7 @@ var scrollVis = function () {
       .transition('cough')
       .duration(0)
       .style('fill', function (d) {
-        return (d.x0 >= 14) ? coughColorScale(progress) : '#9ecae1';
+        return (d.x0 >= 14) ? coughColorScale(progress) : '#BBDEFB';
       });
   }
 
@@ -910,7 +1229,7 @@ var scrollVis = function () {
    * @param data - word data. we use filler words
    *  from getFillerWords1
    */
-  function getHistogram(data) {
+ /* function getHistogram(data) {
     // only get words from the first 30 minutes
     // var thirtyMins = data.filter(function (d) { return d.min < 30; });
     var thirtyMins = [
@@ -938,7 +1257,7 @@ var scrollVis = function () {
       (thirtyMins);
       //.value(function (d) { return d; })(thirtyMins);
   }
-
+*/
   /**
    * groupByWord - group words together
    * using nest. Used to get counts for
