@@ -140,6 +140,7 @@ var scrollVis = function () {
 
     }); */
 
+
     // End of new code
 
   // Sizing for the grid visualization
@@ -719,6 +720,20 @@ var scrollVis = function () {
               .attr("class", "g")
               .attr("transform",function(d) { return "translate(" + x0(d.categorie) + ",0)"; });
 
+   /*   var tip = d3.tip()
+          .attr('class', 'd3-tip')
+          .offset([-10, 0])
+          .html(function(d) {
+              return "<strong>Nombre:</strong> <span style='color:red'>" + d.values["rate"]+ "</span>";
+          }) */
+
+     /* var tip = d3.tip()
+          .attr('class', 'd3-tip')
+          .offset([-10, 0])
+          .html(function(data) {
+              return "<strong>Nombre:</strong> <span style='color:red'>" + data[0].values+ "</span>";})*/
+
+
           slice.selectAll("rect")
               .data(function(d) { return d.values; })
               .enter().append("rect")
@@ -734,10 +749,15 @@ var scrollVis = function () {
               .attr("height", function(d) { return height - y(0); })
               .on("mouseover", function(d) {
                   d3.select(this).style("fill", d3.rgb(color(d.rate)).darker(2));
+                  //tip.show();
               })
               .on("mouseout", function(d) {
                   d3.select(this).style("fill", color(d.rate));
+                  //tip.hide();
               });
+
+
+
 
           slice.selectAll("rect")
               .transition()
