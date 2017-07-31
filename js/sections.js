@@ -10,7 +10,7 @@ var scrollVis = function () {
   // and margins of the vis area.
   var width = 600;
   var height = 520;
-  var margin = { top: 0, left: 20, bottom: 40, right: 10 };
+  var margin = { top: 0, left: 30, bottom: 40, right: 10 };
 
   // Keep track of which visualization
   // we are on and which was the last
@@ -233,15 +233,20 @@ var scrollVis = function () {
   var chart = function (selection) {
     selection.each(function (rawData) {
       // create svg and give it a width and height
-      svg = d3.select(this).selectAll('svg').data([wordData]);
+     svg = d3.select(this).selectAll('svg').data([wordData]);
       var svgE = svg.enter().append('svg');
       // @v4 use merge to combine enter and existing selection
       svg = svg.merge(svgE);
 
-      svg.attr('width', width + margin.left + margin.right);
-      svg.attr('height', height + margin.top + margin.bottom);
+       svg.attr('width', '100%')
+        .attr('height', '100%')
+           .attr('viewBox', '0 0 ' + 630 + ' ' + 560);
+      //svg.attr('width', width + margin.left + margin.right);
+      //svg.attr('height', height + margin.top + margin.bottom);
 
-      svg.append('g');
+
+
+        svg.append('g');
 
 
       // this group element will be used to contain all
@@ -324,19 +329,37 @@ var scrollVis = function () {
 
     // count filler word count title
     g.append('text')
-      .attr('class', 'title count-title highlight')
-      .attr('x', width / 2)
-      .attr('y', height / 3)
-      .text('4,975,277');
+          .attr('class', 'title count-title highlight')
+          .attr('x', width / 2)
+          .attr('y', height / 3)
+          .text('4,975,277');
 
-    g.append('text')
-      .attr('class', 'sub-title count-title')
-      .attr('x', width / 2)
-      .attr('y', (height / 3) + (height / 5))
-      .text('Registered Voters');
+      g.append('text')
+          .attr('class', 'sub-title count-title')
+          .attr('x', width / 2)
+          .attr('y', (height / 3) + (height / 5))
+          .text('Registered Voters');
 
-    g.selectAll('.count-title')
-      .attr('opacity', 0);
+      g.selectAll('.count-title')
+          .attr('opacity', 0);
+
+
+      //new title at the end
+
+      g.append('text')
+          .attr('class', 'title count-title2 highlight')
+          .attr('x', width / 2)
+          .attr('y', height / 3)
+          .text("VOTE!");
+
+      g.append('text')
+          .attr('class', 'sub-title count-title2')
+          .attr('x', width / 2)
+          .attr('y', (height / 3) + (height / 5))
+          .text('The future is yours!');
+
+      g.selectAll('.count-title2')
+          .attr('opacity', 0);
 
     // square grid
     // @v4 Using .merge here to ensure
@@ -470,9 +493,13 @@ var scrollVis = function () {
     activateFunctions[6] = highlightGrid4;
     activateFunctions[7] = showBar;
     activateFunctions[8] = testing;
-    //activateFunctions[9] = showHistAll;
-    //activateFunctions[10] = showCough;
-    //activateFunctions[11] = showHistAll;
+    activateFunctions[9] = sweetEnd;
+    activateFunctions[10] = noth;
+    activateFunctions[11] = noth;
+	
+	function noth(){
+		
+	}
 
     // updateFunctions are called while
     // in a particular section to update
@@ -480,7 +507,7 @@ var scrollVis = function () {
     // Most sections do not need to be updated
     // for all scrolling and so are set to
     // no-op functions.
-    for (var i = 0; i < 9; i++) {
+    for (var i = 0; i < 11; i++) {
       updateFunctions[i] = function () {};
     }
     //updateFunctions[7] = updateCough;
@@ -519,6 +546,35 @@ var scrollVis = function () {
       .transition()
       .duration(600)
       .attr('opacity', 1.0);
+  }
+
+
+  function sweetEnd(){
+          hideAxis();
+
+          svg.selectAll('.legend')
+              .transition()
+              .duration(500)
+              .attr('opacity', 0);
+
+          svg.selectAll('.x_axis')
+              .transition()
+              .duration(300)
+              .attr('opacity', 0);
+          svg.selectAll('.y_axis')
+              .transition()
+              .duration(300)
+              .attr('opacity', 0);
+
+          svg.selectAll(".homie")
+              .transition()
+              .duration(1000)
+              .attr("width", 0)
+
+      g.selectAll('.count-title2')
+          .transition()
+          .duration(600)
+          .attr('opacity', 1.0);
   }
 
   /**
@@ -621,6 +677,10 @@ var scrollVis = function () {
 
   function testing() {
 
+      g.selectAll('.count-title2')
+          .transition()
+          .duration(0)
+          .attr('opacity', 0);
       g.selectAll('.bar-text')
           .transition()
           .duration(0)
@@ -703,6 +763,7 @@ var scrollVis = function () {
           svg.append("g")
               .attr("class", "y_axis")
               .attr('opacity','0')
+			  .attr("transform", "translate(30,0)")
               .call(yAxis)
               .append("text")
               .attr("transform", "rotate(-90)")

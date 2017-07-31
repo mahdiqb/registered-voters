@@ -1,6 +1,6 @@
 
 .container {
-  width: 890px;
+  width: 90%;
 }
 
 #graphic {
@@ -11,27 +11,29 @@
 #sections {
   position: relative;
   display: inline-block;
-  width: 250px;
+  width: 30%;
   top: 0px;
   z-index: 90;
   padding-bottom: 200px;
 }
 
 .step {
-  margin-bottom: 200px;
+  margin-bottom: 160%;
   font-family: "TiemposTextWeb-Regular","Georgia";
   font-size: 16px;
-  line-height: 23px;
+  font-size: 2vw;
+  line-height: 2.5vw;
   color: #767678;
 }
 
 #sections .title {
   font-family: Arial,Helvetica,"san-serif";
   font-size: 16px;
+  font-size: 3vw;
   font-weight: bold;
   margin-bottom: 2px;
   color: #262626;
-  line-height: 1.2em;
+  line-height: 3.5vw;
 }
 
 #extra-space {
@@ -42,11 +44,30 @@
   display: inline-block;
   position: fixed;
   top: 60px;
+  width: 60%;
+  height: 90%;
   z-index: 1;
   margin-left: 0;
   /* height: 600px; */
   /* width: 600px; */
   /* background-color: #ddd; */
+}
+
+.svg-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%; /* aspect ratio */
+  vertical-align: top;
+  overflow: hidden;
+}
+.svg-content-responsive {
+  display: inline-block;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
 }
 
 #vis .title {
